@@ -15,7 +15,7 @@ app.use(cors({
 }));
 
 app.post("/register",async (req,resp)=>{
-    let user=new User(req.body);
+    let user=new User(req.body.register);
     let result=await user.save();
     result = result.toObject();
     delete result.password;
@@ -28,9 +28,11 @@ app.post("/register",async (req,resp)=>{
 });
 
 app.post("/login",async (req,resp)=>{
-if(req.body.password && req.body.email)
+   const request = req.body.login;
+
+if(request.password && request.email)
 {
-   let user=await User.findOne(req.body).select("-password");
+   let user=await User.findOne(request).select("-password");
     if(user)
     {
         Jwt.sign({ user },jwtKey,{ expiresIn: "2h" },(err,token)=>{
