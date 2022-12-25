@@ -4,4 +4,4 @@
 -npm i mongoose <br/>
 -npm i nodemon </br>
 -npm install cors <br/>
--npm i jsonwebtoken </>
+-npm i jsonwebtoken <br/>
