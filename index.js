@@ -2,9 +2,10 @@ const express=require('express');
 const cors=require("cors");
 require('./db/config');
 const User = require("./db/User");
+const Product=require("./db/Product")
+const Company=require("./db/Company")
 
 const Jwt = require('jsonwebtoken');
-const Company = require('./db/Company');
 const jwtKey = "process-management";
 
 const app=express();
@@ -53,13 +54,24 @@ else
 })
 
 app.post("/add-product",verifyToken,async (req,resp)=>{
-    let product=new Product(req.body);
+    let product = new Product(req.body);
     let result=await product.save();
     return resp.send(result);
 })
 
 app.get("/products",verifyToken,async (req,resp)=>{
     let products=await Product.find();
+    if(products.length>0)
+    {
+      return  resp.send(products)
+    }
+    else{
+      return  resp.send({result:"No product found"})
+    }
+})
+
+app.get("/newproducts",verifyToken,async (req,resp)=>{
+    let products=await Product.find().sort({"_id": -1}).limit(5);
     if(products.length>0)
     {
       return  resp.send(products)
@@ -110,6 +122,18 @@ app.get("/companies",verifyToken,async (req,resp)=>{
       return  resp.send({result:"No product found"})
     }
 })
+
+app.get("/newcompanies",verifyToken,async (req,resp)=>{
+    let companies=await Company.find().sort({"_id": -1}).limit(5);
+    if(companies.length>0)
+    {
+      return  resp.send(companies)
+    }
+    else{
+      return  resp.send({result:"No product found"})
+    }
+})
+
 
 app.delete("/company/:id",verifyToken, async (req,resp)=>{
     const result = await Company.deleteOne({_id:req.params.id})
