@@ -6,6 +6,7 @@ const Product=require("./db/Product")
 const Company=require("./db/Company")
 
 const Jwt = require('jsonwebtoken');
+const { request } = require('express');
 const jwtKey = "process-management";
 
 const app=express();
@@ -16,6 +17,8 @@ app.use(cors({
 }));
 
 app.post("/register",async (req,resp)=>{
+    if(request.password && request.email &&request.username)
+    {
     let user=new User(req.body.register);
     let result=await user.save();
     result = result.toObject();
@@ -24,9 +27,13 @@ app.post("/register",async (req,resp)=>{
         if(err){
            return resp.send("Something went wrong, please trg after sometime")
         }
-  return  resp.send({ result,auth : token})
-})
-});
+        return  resp.send({ result,auth : token})
+        })
+        }
+        else{
+            return  resp.send({result:'No user found'})
+          }}
+        );
 
 app.post("/login",async (req,resp)=>{
    const request = req.body.login;
@@ -54,7 +61,7 @@ else
 })
 
 app.post("/add-product",verifyToken,async (req,resp)=>{
-    let product = new Product(req.body);
+    let product = new Product(req.body.product);
     let result=await product.save();
     return resp.send(result);
 })
@@ -66,12 +73,12 @@ app.get("/products",verifyToken,async (req,resp)=>{
       return  resp.send(products)
     }
     else{
-      return  resp.send({result:"No product found"})
+      return  resp.send({})
     }
 })
 
 app.get("/newproducts",verifyToken,async (req,resp)=>{
-    let products=await Product.find().sort({"_id": -1}).limit(5);
+    let products=await Product.find().sort({"_id": -1}).limit(3);
     if(products.length>0)
     {
       return  resp.send(products)
@@ -107,7 +114,7 @@ app.put("/product/:id", verifyToken,async (req, resp) => {
 
 
 app.post("/add-company",verifyToken,async (req,resp)=>{
-    let company=new Company(req.body);
+    let company=new Company(req.body.company);
     let result=await company.save();
     return resp.send(result);
 })
@@ -119,12 +126,12 @@ app.get("/companies",verifyToken,async (req,resp)=>{
       return  resp.send(companies)
     }
     else{
-      return  resp.send({result:"No product found"})
+      return  resp.send({})
     }
 })
 
 app.get("/newcompanies",verifyToken,async (req,resp)=>{
-    let companies=await Company.find().sort({"_id": -1}).limit(5);
+    let companies=await Company.find().sort({"_id": -1}).limit(3);
     if(companies.length>0)
     {
       return  resp.send(companies)
@@ -146,7 +153,7 @@ app.put("/company/:id", verifyToken,async (req, resp) => {
              _id : req.params.id 
         },
         {
-            $set : req.body
+            $set : req.body.company
         }
     )
     if(result)
