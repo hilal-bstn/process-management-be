@@ -66,8 +66,8 @@ app.post("/add-product",verifyToken,async (req,resp)=>{
     return resp.send(result);
 })
 
-app.get("/products",verifyToken,async (req,resp)=>{
-    let products=await Product.find();
+app.get("/products",async (req,resp)=>{
+    let products=await Product.find().populate("companyId");
     if(products.length>0)
     {
       return  resp.send(products)
@@ -137,7 +137,7 @@ app.get("/newcompanies",verifyToken,async (req,resp)=>{
       return  resp.send(companies)
     }
     else{
-      return  resp.send({result:"No product found"})
+      return  resp.send({result:"No company found"})
     }
 })
 

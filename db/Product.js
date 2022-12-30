@@ -6,7 +6,7 @@ const productSchema= new mongoose.Schema({
     category:String,
     amount:Number, 
     amountUnit:Number, 
-    companyId:String
+    companyId:{ type: mongoose.Schema.Types.ObjectId, ref: "companies" }
     
 });
 
