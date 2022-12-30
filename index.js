@@ -60,13 +60,18 @@ else
 }
 })
 
+app.get("/total-user",async (req,resp)=>{
+  let usersCount = await User.count({});
+    return  resp.send(count={usersCount})
+})
+
 app.post("/add-product",verifyToken,async (req,resp)=>{
     let product = new Product(req.body.product);
     let result=await product.save();
     return resp.send(result);
 })
 
-app.get("/products",async (req,resp)=>{
+app.get("/products",verifyToken,async (req,resp)=>{
     let products=await Product.find().populate("companyId");
     if(products.length>0)
     {
