@@ -116,6 +116,15 @@ app.put("/product/:id", verifyToken,async (req, resp) => {
     }
 });
 
+app.get("/product-search/:key", async (req,resp)=>{
+  let result = await Product.find({
+      "$or": [
+          { name: {$regex:req.params.key} },
+          { category: {$regex:req.params.key} },
+      ]
+  });
+  return resp.send(result);
+})
 
 app.post("/add-company",verifyToken,async (req,resp)=>{
     let company=new Company(req.body.company);
