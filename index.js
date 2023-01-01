@@ -99,13 +99,12 @@ app.delete("/product/:id",verifyToken, async (req,resp)=>{
 })
 
 app.put("/product/:id", verifyToken,async (req, resp) => {
-    console.log(req)
     let result = await Product.updateOne(
         {
              _id : req.params.id 
         },
         {
-            $set : req.body
+            $set : req.body.product
         }
     )
     if(result)
