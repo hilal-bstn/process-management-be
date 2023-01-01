@@ -123,6 +123,17 @@ app.post("/add-company",verifyToken,async (req,resp)=>{
     return resp.send(result);
 })
 
+app.get("/company-search/:key", async (req,resp)=>{
+  let result = await Company.find({
+      "$or": [
+          { companyName: {$regex:req.params.key} },
+          { companyLegalNumber: {$regex:req.params.key} },
+          { incorporationCountry: {$regex:req.params.key} }
+      ]
+  });
+  return resp.send(result);
+})
+
 app.get("/companies",verifyToken,async (req,resp)=>{
     let companies=await Company.find();
     if(companies.length>0)
