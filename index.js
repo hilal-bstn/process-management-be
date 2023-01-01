@@ -122,7 +122,7 @@ app.get("/product-search/:key", async (req,resp)=>{
           { name: {$regex:req.params.key} },
           { category: {$regex:req.params.key} },
       ]
-  });
+  }).populate("companyId");
   return resp.send(result);
 })
 
