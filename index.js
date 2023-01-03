@@ -17,7 +17,8 @@ app.use(cors({
 }));
 
 app.post("/register",async (req,resp)=>{
-    if(request.password && request.email &&request.username)
+  var request=req.body.register;
+    if(request.password && request.email && request.username)
     {
     let user=new User(req.body.register);
     let result=await user.save();
